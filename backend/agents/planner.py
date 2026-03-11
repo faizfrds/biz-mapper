@@ -70,7 +70,7 @@ async def run_planner(user_prompt: str) -> dict:
     pipeline = create_agent_pipeline()
     runner = InMemoryRunner(agent=pipeline)
     
-    final_output = ""
+    final_output: str = ""
     try:
         events = await runner.run_debug(user_prompt, quiet=True)
         for event in events:
@@ -78,14 +78,27 @@ async def run_planner(user_prompt: str) -> dict:
             event_dict = event.model_dump()
             if event_dict.get("content") and event_dict["content"].get("parts"):
                 for part in event_dict["content"]["parts"]:
-                    if part.get("text"):
-                        final_output += part["text"]
+                    text_content = part.get("text")
+                    if text_content:
+                        final_output += str(text_content)
 
     except Exception as e:
         final_output = f"Error during pipeline execution: {str(e)}"
         tools.emit_thought_log("System", "error", f"Pipeline failed: {str(e)}")
         
+    # Attempt to parse final_output as JSON
+    results = []
+    try:
+        # Sometimes LLMs wrap in markdown anyway despite instruction
+        clean_json = str(final_output).strip()
+        clean_json = clean_json.replace("```json", "").replace("```", "").strip()
+        if clean_json:
+            results = json.loads(clean_json)
+    except Exception as e:
+        print(f"Failed to parse JSON output: {e}. Raw output: {final_output}")
+
     return {
+        "results": results,
         "final_output": final_output,
         "thoughts": tools.thought_logs.copy()
     }

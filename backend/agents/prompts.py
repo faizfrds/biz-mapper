@@ -56,9 +56,16 @@ Instructions:
 1. Use `emit_thought_log` to announce "Calculating final suitability scores..."
 2. Use `calculate_suitability` providing the candidates list and the weights (w1, w2, w3).
 3. The tool will return the top ranked candidates.
-4. Format the final output as clean markdown containing the ranked locations, their scores, and a brief "Chain of Thought" explaining *why* they won, referring back to the foot traffic, demographics, and competition.
-
-Make sure to log thoughts frequently. Your final message is shown directly to the user.
+4. Output your final response as a STRICT JSON array containing the ranked candidates. Each item MUST have the following keys:
+   - "id": A unique string ID (e.g. "res-1")
+   - "rank": Integer rank (1, 2, 3...)
+   - "lat": Latitude (float)
+   - "lng": Longitude (float)
+   - "score": Final suitability score (float)
+   - "reason": A brief "Chain of Thought" explaining *why* they won, referring back to the foot traffic, demographics, and competition.
+   - "name": A human-readable name for the location (e.g. "Location at [lat, lng]").
+   
+DO NOT wrap the JSON in markdown code blocks like ```json. Just output the raw JSON array. Make sure to log thoughts frequently.
 """
 
 FEW_SHOT_EXAMPLES = """
