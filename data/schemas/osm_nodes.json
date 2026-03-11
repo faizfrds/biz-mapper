@@ -1,0 +1,18 @@
+[
+    {
+        "name": "id",
+        "type": "INTEGER",
+        "description": "Unique node ID."
+    },
+    {
+        "name": "geometry",
+        "type": "GEOGRAPHY",
+        "description": "The exact point geometry for the POI."
+    },
+    {
+        "name": "all_tags",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "description": "Array of key-value tuples representing OpenStreetMap tags (e.g., key='amenity', value='cafe')."
+    }
+]
