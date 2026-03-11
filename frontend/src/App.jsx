@@ -55,7 +55,11 @@ function App() {
             <div className="pointer-events-auto flex overflow-x-auto gap-4 pb-4 snap-x ml-auto mr-auto max-w-5xl">
               {results.map(r => (
                 <div 
+<<<<<<< Updated upstream
                   key={r.id} 
+=======
+                  key={r.id || r.rank} 
+>>>>>>> Stashed changes
                   onClick={() => setSelectedResult(r)}
                   className={`snap-center flex-shrink-0 w-80 p-4 rounded-xl backdrop-blur-md border transition-all cursor-pointer ${
                     selectedResult?.id === r.id 

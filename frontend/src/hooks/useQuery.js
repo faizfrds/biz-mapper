@@ -15,6 +15,7 @@ export function useQuery() {
     setResults([]);
     setError(null);
 
+<<<<<<< Updated upstream
     // TODO: Phase 3 will replace this with WebSocket / SSE connection
     // For Phase 1 & 2, we just use a REST call with a fallback to mock data
     try {
@@ -73,6 +74,29 @@ export function useQuery() {
           name: 'Candidate Site 3 (Lower Queen Anne)'
         }
       ]);
+=======
+    try {
+      // Hit the FastAPI backend endpoint
+      const response = await axios.post('/api/query', { prompt: userPrompt }, {
+        timeout: 60000 // ADK agents might take up to a minute to process
+      });
+      
+      if (response.data && response.data.results) {
+        setResults(response.data.results);
+      }
+      if (response.data && response.data.thoughts) {
+        setThoughts(response.data.thoughts);
+      }
+    } catch (err) {
+      console.error('Backend error:', err.message);
+      setError(err.message);
+      setThoughts([{
+        timestamp: new Date().toISOString(),
+        agent: 'System',
+        status: 'error',
+        message: 'Could not connect to the agent backend. Please ensure the server is running.'
+      }]);
+>>>>>>> Stashed changes
     } finally {
       setIsLoading(false);
     }

@@ -8,6 +8,7 @@ export default function ThinkingLog({ thoughts, isLoading }) {
   }, [thoughts]);
 
   const getIcon = (type) => {
+<<<<<<< Updated upstream
     switch(type) {
       case 'search':
          return <div className="w-6 h-6 flex items-center justify-center rounded-full bg-blue-500/20 text-blue-400"><span className="text-xs border-blue-400">🔍</span></div>;
@@ -18,6 +19,22 @@ export default function ThinkingLog({ thoughts, isLoading }) {
       default:
          return <div className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-500/20 text-slate-400"><span className="text-xs">🤖</span></div>;
     }
+=======
+    // If from ADK backend, type is in 'status' field typically, or 'agent'
+    const str = (type || '').toLowerCase();
+    
+    if (str.includes('search') || str.includes('strategist')) {
+       return <div className="w-6 h-6 flex items-center justify-center rounded-full bg-blue-500/20 text-blue-400"><span className="text-xs border-blue-400">🔍</span></div>;
+    }
+    if (str.includes('data') || str.includes('analyst') || str.includes('sql')) {
+       return <div className="w-6 h-6 flex items-center justify-center rounded-full bg-purple-500/20 text-purple-400"><span className="text-xs">📊</span></div>;
+    }
+    if (str.includes('calc') || str.includes('score') || str.includes('cartographer')) {
+       return <div className="w-6 h-6 flex items-center justify-center rounded-full bg-neon/20 text-neon"><span className="text-xs">🧮</span></div>;
+    }
+    
+    return <div className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-500/20 text-slate-400"><span className="text-xs">🤖</span></div>;
+>>>>>>> Stashed changes
   };
 
   return (
@@ -35,6 +52,7 @@ export default function ThinkingLog({ thoughts, isLoading }) {
 
       <div className="flex flex-col gap-3 relative before:absolute before:inset-0 before:ml-3 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-700/50 before:to-transparent">
         
+<<<<<<< Updated upstream
         {thoughts.map((t, idx) => (
           <div key={t.id || idx} className="relative flex items-start gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="absolute left-0 w-6 flex items-center justify-center z-10 bg-dark-800">
@@ -47,11 +65,35 @@ export default function ThinkingLog({ thoughts, isLoading }) {
                 </span>
                 <p className="text-sm text-slate-300 leading-relaxed">
                   {t.text}
+=======
+        {thoughts.map((t, idx) => {
+          // Normalizing ADK response log vs legacy mock logic
+          const time = t.timestamp ? new Date(t.timestamp).toLocaleTimeString() : '';
+          const category = t.agent ? `${t.agent} • ${t.status}` : `${t.type}`;
+          const isError = t.status === 'error';
+          
+          return (
+          <div key={idx} className="relative flex items-start gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="absolute left-0 w-6 flex items-center justify-center z-10 bg-dark-800">
+              {isError ? getIcon('error') : getIcon(t.agent || t.type)}
+            </div>
+            <div className="ml-10 flex-1">
+              <div className={`bg-dark-900 border ${isError ? 'border-red-900/50' : 'border-slate-700/50'} p-3 rounded-lg rounded-tl-none shadow-sm flex flex-col gap-1`}>
+                <span className={`text-[10px] uppercase font-bold tracking-wider ${isError ? 'text-red-500' : 'text-slate-500'}`}>
+                  {time} {time && '•'} {category}
+                </span>
+                <p className={`text-sm ${isError ? 'text-red-200' : 'text-slate-300'} leading-relaxed`}>
+                  {t.message || t.text}
+>>>>>>> Stashed changes
                 </p>
               </div>
             </div>
           </div>
+<<<<<<< Updated upstream
         ))}
+=======
+        )})}
+>>>>>>> Stashed changes
         
         {isLoading && thoughts.length > 0 && (
           <div className="relative flex items-center gap-4 py-2 animate-pulse">
