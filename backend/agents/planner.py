@@ -14,7 +14,7 @@ def create_agent_pipeline():
     # 1. The Strategist
     strategist = Agent(
         name="Strategist",
-        model="gemini-2.5-flash",
+        model="gemini-1.5-flash",
         description="Lead planner who interprets user goals and determines location and weights.",
         instruction=prompts.STRATEGIST_PROMPT,
         tools=[tools.geocode_neighborhood, tools.emit_thought_log]
@@ -23,7 +23,7 @@ def create_agent_pipeline():
     # 2. The Geo-Analyst
     geo_analyst = Agent(
         name="Geo_Analyst",
-        model="gemini-2.5-flash",
+        model="gemini-1.5-flash",
         description="BigQuery specialist who executes map queries.",
         instruction=prompts.GEO_ANALYST_PROMPT,
         tools=[tools.get_schema, tools.run_query, tools.emit_thought_log]
@@ -32,7 +32,7 @@ def create_agent_pipeline():
     # 3. The Cartographer
     cartographer = Agent(
         name="Cartographer",
-        model="gemini-2.5-flash",
+        model="gemini-1.5-flash",
         description="Data refiner who applies the mathematical scoring formula.",
         instruction=prompts.CARTOGRAPHER_PROMPT,
         tools=[tools.calculate_suitability, tools.emit_thought_log]
@@ -42,7 +42,7 @@ def create_agent_pipeline():
     # exact ADK version, we can create a parent Agent that delegates to sub-agents.
     orchestrator = Agent(
         name="Orchestrator",
-        model="gemini-2.5-flash",
+        model="gemini-1.5-flash",
         description="Manages the pipeline from User Intent -> Execution -> Display",
         instruction=(
             "You are the central Orchestrator. The user will give you a business goal. "
