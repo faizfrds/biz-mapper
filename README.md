@@ -9,68 +9,73 @@ Transparent Reasoning: Visualize the agent’s "Chain of Thought" as it filters 
 Data-Driven Accuracy: Leverage massive datasets (Census, OSM) for high-fidelity scoring.
 Interactive Visualization: Use Google Maps to provide a spatial context for the final output.
 
-## Technical Stack
-Layer
-Technology
-Role
-Frontend
-React + Tailwind CSS
-Interactive UI and "Thinking" console.
-Maps API
-Google Maps (JS SDK)
-Heatmaps, markers, and neighborhood boundaries.
-Orchestration
-Google ADK
-Manages the agent’s logic, loops, and tool-calling.
-LLM
-Gemini 3.5
-The "brain" for reasoning and SQL generation.
-Data Warehouse
-Google BigQuery
-Stores US Census, OSM, and foot traffic proxies.
-Backend API
-FastAPI (Python)
-Bridges the UI and the Agentic framework.
+### Design Doc
+https://docs.google.com/document/d/1FtdZDKqD4mu7ZJQY_9pV6YbGrh8QfJyOZHVo3aZIE6E/edit?usp=sharing
 
+## Getting Started & Usage Instructions
 
-## Proposed Design & System Architecture
-A. The Agentic Workflow (The Brain)
-Instead of a simple linear script, the agent operates in a Reason-Act-Observe loop:
-Parser: LLM extracts "Seattle," "Sourdough Bakery," and "High Foot Traffic" from the prompt.
-SQL Tool: The agent generates a BigQuery SQL statement to find high-density residential areas with few "bakery" or "cafe" tags.
-Refinement: If results are too broad, the agent "decides" to query a second dataset (e.g., median income levels).
-Final Scoring: The agent applies a weighted formula to rank the top 3 coordinates.
-B. Data Integration
-The backend will primarily interface with BigQuery public datasets:
-bigquery-public-data.census_bureau_acs: For population density and income levels. (US)
-bigquery-public-data.geo_openstreetmap.planet_nodes: To identify existing competitors and points of interest (POIs).
-C. UI "Thinking Process" Component
-To make the AI feel "autonomous," the UI will feature a Log Stream. As the agent performs tasks, it emits status updates:
-“Searching for commercial zones in Capitol Hill...”
-“Found 12 existing bakeries; cross-referencing with foot traffic data...”
-“Filtering for areas with >$80k median income...”
+### Sample Prompts
+- "I want to open an artisanal coffee shop in Seattle focusing on areas with high foot traffic and high median income, but away from existing large cafe chains."
+- "Find me a location for a vegan bakery in Portland, Oregon, with good access to public transport and a young population."
+- "Where should I open a dog-friendly cafe in Austin, Texas? Prioritize areas with many parks and young professionals."
 
-## Logic & Mathematics
-The agent will calculate a Suitability Score ($S$) for each candidate location ($i$) using a weighted linear combination:
-$$S_i = w_1 T_i + w_2 D_i - w_3 C_i$$
-Where:
-$T_i$ = Foot traffic proxy (e.g., proximity to transit hubs).
-$D_i$ = Target demographic density.
-$C_i$ = Competition density (nearby bakeries).
-$w$ = Weights assigned by the LLM based on the user's specific goal.
+### Demo UI
 
-## Milestones
-Phase 1 (MVP): Connect Google ADK to BigQuery; successfully return 3 raw coordinates for a specific query in the console.
-Phase 2 (Map Integration): Render BigQuery results as markers on Google Maps.
-Phase 3 (Agentic Feedback): Implement the "Thinking" sidebar to show real-time agent logs.
-Phase 4 (Refinement): Add "What-If" sliders (e.g., "Weight competition more heavily").
+![Demo UI](/public/sample-result.png)
 
-## Risks & Trade-offs
-Query Latency: BigQuery is powerful but can be slow for real-time UI. Solution: Cache common neighborhood scores or use BigQuery BI Engine.
-Hallucination: The LLM might invent a neighborhood. Solution: Use a "Grounding" layer where the LLM must select from a pre-defined list of Seattle neighborhood polygons.
+### Prerequisites
+- Python 3.9+
+- Node.js & npm
+- A Google Cloud Project with **BigQuery** and the **Google Maps JavaScript API** enabled.
+- A **Gemini API Key** (for Google ADK/LLM features) and Google Cloud credentials (for BigQuery).
 
+### 1. Environment Variables
+Create a `.env` file in the root directory (or in the backend and frontend folders).
+**Backend (FastAPI) requires:**
+- `GEMINI_API_KEY`: Your Google Gemini API key.
+- `GOOGLE_APPLICATION_CREDENTIALS`: Path to your Google Cloud service account JSON file.
 
+**Frontend (React/Vite) requires:**
+- `VITE_GOOGLE_MAPS_API_KEY`: Your Google Maps API key.
 
+### 2. Running the Backend
+1. Open a terminal and navigate to the `backend` directory:
+   ```bash
+   cd backend
+   ```
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Start the FastAPI development server:
+   ```bash
+   uvicorn main:app --reload --port 8000
+   ```
+
+### 3. Running the Frontend
+1. Open a new terminal and navigate to the `frontend` directory:
+   ```bash
+   cd frontend
+   ```
+2. Install packages:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+### 4. Using the Application
+1. Open your browser and go to `http://localhost:5173`.
+2. In the **Search Bar**, enter a natural language business goal. For example: *"I want to open an artisanal coffee shop in Seattle focusing on areas with high foot traffic and high median income, but away from existing large cafe chains."*
+3. Watch the **Thinking Log** on the left as it streams the AI's internal reasoning and BigQuery execution.
+4. When complete, the recommended locations will be shown as cards and plotted as markers on the **Map View**.
 
 biz-mapper/
 ├── backend/                # FastAPI / Python logic
