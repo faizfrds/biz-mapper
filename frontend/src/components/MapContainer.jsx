@@ -7,15 +7,6 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
   const defaultZoom = 4;
 
   // If there are results, center on the top result
-<<<<<<< Updated upstream
-  const center = results.length > 0 
-    ? { lat: results[0].lat, lng: results[0].lng } 
-    : defaultCenter;
-  
-  const zoom = results.length > 0 ? 12 : defaultZoom;
-
-  const apiKey = import.meta.env.GOOGLE_MAPS_API_KEY || '';
-=======
   const center = results && results.length > 0 
     ? { lat: results[0].lat, lng: results[0].lng } 
     : defaultCenter;
@@ -23,7 +14,6 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
   const zoom = results && results.length > 0 ? 12 : defaultZoom;
 
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || import.meta.env.GOOGLE_MAPS_API_KEY || '';
->>>>>>> Stashed changes
 
   if (!apiKey) {
     return (
@@ -52,17 +42,10 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
         disableDefaultUI={true}
         className="w-full h-full"
       >
-<<<<<<< Updated upstream
-        {results.map((result, index) => {
-          const isSelected = selectedResult?.id === result.id;
-          return (
-            <React.Fragment key={result.id}>
-=======
         {results && results.map((result, index) => {
           const isSelected = selectedResult?.id === result.id;
           return (
             <React.Fragment key={result.id || index}>
->>>>>>> Stashed changes
               <AdvancedMarker
                 position={{ lat: result.lat, lng: result.lng }}
                 onClick={() => onSelectResult(result)}

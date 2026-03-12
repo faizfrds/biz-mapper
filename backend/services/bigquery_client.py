@@ -13,16 +13,38 @@ client = bigquery.Client(project=PROJECT_ID)
 def get_table_schema(dataset_id: str, table_id: str, project_id: str = "bigquery-public-data") -> list[dict]:
     """
     Retrieves the schema for a specific BigQuery table.
-    
+
     Args:
-        dataset_id: The ID of the dataset.
-        table_id: The ID of the table.
-        project_id: The project ID (defaults to bigquery-public-data).
-        
+        dataset_id: The ID of the dataset, or a fully-qualified table ID (e.g., 'project.dataset.table').
+        table_id: The ID of the table. Ignored if dataset_id is a fully-qualified ID.
+        project_id: The project ID (defaults to bigquery-public-data). Ignored if dataset_id is fully-qualified.
+
     Returns:
         A list of dictionaries containing 'name' and 'type' for each field.
     """
-    table_ref = f"{project_id}.{dataset_id}.{table_id}"
+    # Handle fully-qualified table IDs and edge cases
+    if '.' in dataset_id:
+        parts = dataset_id.split('.')
+        if len(parts) == 3:
+            # Already fully qualified: project.dataset.table
+            table_ref = dataset_id
+        elif len(parts) == 4:
+            # Handle redundant prefix like "bigquery-public-data.bigquery_public_data.dataset.table"
+            # Use the first part as project, last two as dataset.table
+            table_ref = f"{parts[0]}.{parts[2]}.{parts[3]}"
+        elif len(parts) == 2:
+            # Could be "dataset.table" or "prefix.dataset"
+            # Check if first part looks like a project/dataset prefix (contains underscore or "public")
+            if 'public' in parts[0] or '_' in parts[0]:
+                # Likely "bigquery_public_data.dataset" - use just the second part as dataset
+                table_ref = f"{project_id}.{parts[1]}.{table_id}"
+            else:
+                # Standard "dataset.table" format
+                table_ref = f"{project_id}.{dataset_id}.{table_id}"
+        else:
+            table_ref = f"{project_id}.{dataset_id}.{table_id}"
+    else:
+        table_ref = f"{project_id}.{dataset_id}.{table_id}"
     try:
         table = client.get_table(table_ref)
         schema = [{"name": field.name, "type": field.field_type} for field in table.schema]

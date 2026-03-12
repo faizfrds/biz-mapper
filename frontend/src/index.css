@@ -5,17 +5,10 @@
   --color-brand-400: #38bdf8;
   --color-brand-600: #0284c7;
   --color-brand-900: #0c4a6e;
-<<<<<<< Updated upstream
-  
-  --color-dark-800: #1e293b;
-  --color-dark-900: #0f172a;
-  
-=======
 
   --color-dark-800: #1e293b;
   --color-dark-900: #0f172a;
 
->>>>>>> Stashed changes
   --color-neon: #10b981;
 }
 
@@ -34,28 +27,16 @@
 ::-webkit-scrollbar {
   width: 6px;
 }
-<<<<<<< Updated upstream
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-=======
 
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 
->>>>>>> Stashed changes
 ::-webkit-scrollbar-thumb {
   background: #334155;
   border-radius: 4px;
 }
-<<<<<<< Updated upstream
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-=======
 
 ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }
->>>>>>> Stashed changes
