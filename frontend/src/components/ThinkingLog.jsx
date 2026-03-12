@@ -63,7 +63,7 @@ export default function ThinkingLog({ thoughts, isLoading }) {
           </div>
         )})}
         
-        {isLoading && thoughts.length > 0 && (
+        {isLoading && thoughts.length >= 0 && (
           <div className="relative flex items-center gap-4 py-2 animate-pulse">
              <div className="absolute left-0 w-6 flex items-center justify-center z-10 bg-dark-800">
               <div className="w-4 h-4 rounded-full bg-brand-500/50 flex items-center justify-center">

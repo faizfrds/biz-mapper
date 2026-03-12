@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow } from '@vis.gl/react-google-maps';
 
 export default function MapContainer({ results, selectedResult, onSelectResult }) {
@@ -7,12 +7,21 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
   const defaultZoom = 4;
 
   // If there are results, center on the top result
-  const [mapCenter, setMapCenter] = useState(results && results.length > 0 
-    ? { lat: Number(results[0].lat), lng: Number(results[0].lng) } 
-    : defaultCenter);
-  const [mapZoom, setMapZoom] = useState(results && results.length > 0 ? 12 : defaultZoom);
-  
-  const zoom = results && results.length > 0 ? 12 : defaultZoom;
+  const [mapCenter, setMapCenter] = useState(defaultCenter);
+  const [mapZoom, setMapZoom] = useState(defaultZoom);
+
+  console.log(results)
+
+  useEffect(() => {
+    if (results && results.length > 0) {
+      setMapCenter({ lat: Number(results[0].lat), lng: Number(results[0].lng) });
+      setMapZoom(12);
+    }
+    else{
+      setMapCenter(defaultCenter);
+      setMapZoom(defaultZoom);
+    }
+  }, [results]);
 
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || import.meta.env.GOOGLE_MAPS_API_KEY || '';
 
@@ -35,8 +44,8 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
   return (
     <APIProvider apiKey={apiKey}>
       <Map
-        defaultCenter={mapCenter}
-        defaultZoom={mapZoom}
+        center={mapCenter}
+        zoom={mapZoom}
         mapId="DEMO_MAP_ID" // Required for AdvancedMarker
         disableDefaultUI={false}
         className="w-full h-full"
