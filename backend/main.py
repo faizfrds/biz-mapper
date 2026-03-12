@@ -32,7 +32,31 @@ async def run_query(request: QueryRequest):
     Returns the final result and all thoughts at once.
     """
     result = await planner.run_planner(request.prompt)
-    return result
+
+    # Parse the final_output to extract structured results
+    final_output = result.get("final_output", "")
+
+    # Try to parse JSON from the output
+    parsed_results = []
+    summary_text = final_output
+
+    try:
+        # Look for JSON block in the output
+        import re
+        json_match = re.search(r'\{[\s\S]*"results"[\s\S]*\}', final_output)
+        if json_match:
+            parsed_data = json.loads(json_match.group())
+            parsed_results = parsed_data.get("results", [])
+            summary_text = parsed_data.get("summary", final_output)
+    except (json.JSONDecodeError, AttributeError):
+        # If parsing fails, keep the original text output
+        pass
+
+    return {
+        "results": parsed_results,
+        "summary": summary_text,
+        "thoughts": result.get("thoughts", [])
+    }
 
 @app.websocket("/api/ws/query")
 async def websocket_query(websocket: WebSocket):

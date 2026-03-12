@@ -22,6 +22,14 @@ def get_schema(dataset_id: str, table_id: str) -> str:
         return json.dumps({"error": f"Could not find schema for {dataset_id}.{table_id}"})
     return json.dumps({"schema": schema})
 
+import decimal
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
+        return super(DecimalEncoder, self).default(obj)
+
 def run_query(sql: str) -> str:
     """
     Executes a SQL query against BigQuery and returns the results.
@@ -36,8 +44,8 @@ def run_query(sql: str) -> str:
     # Truncate results to prevent blowing up the LLM context window
     if len(results) > 20:
         summary = results[:20]
-        return json.dumps({"results": summary, "note": f"Truncated; actual result count: {len(results)}"})
-    return json.dumps({"results": results})
+        return json.dumps({"results": summary, "note": f"Truncated; actual result count: {len(results)}"}, cls=DecimalEncoder)
+    return json.dumps({"results": results}, cls=DecimalEncoder)
 
 def calculate_suitability(candidates: list[dict], w1: float, w2: float, w3: float) -> str:
     """
