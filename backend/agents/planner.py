@@ -13,7 +13,7 @@ from backend.agents import prompts
 # gemini-2.0-flash has a higher free-tier rate limit (15 RPM) compared to
 # gemini-2.5-flash (5 RPM), making it far more practical for multi-agent
 # pipelines that issue many LLM calls in quick succession.
-AGENT_MODEL = "gemini-2.0-flash"
+AGENT_MODEL = "gemini-2.5-pro"
 
 # Maximum number of retries when a 429 rate-limit error is hit.
 MAX_RETRIES = 3
