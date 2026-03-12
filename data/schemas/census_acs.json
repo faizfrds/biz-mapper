@@ -1,0 +1,22 @@
+[
+    {
+        "name": "geo_id",
+        "type": "STRING",
+        "description": "Unique identifier for the geography."
+    },
+    {
+        "name": "total_pop",
+        "type": "INTEGER",
+        "description": "Total population in the census block group."
+    },
+    {
+        "name": "median_income",
+        "type": "FLOAT",
+        "description": "Median household income."
+    },
+    {
+        "name": "blockgroup_geom",
+        "type": "GEOGRAPHY",
+        "description": "The polygon representing the boundary of the block group."
+    }
+]

@@ -6,16 +6,12 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
   const defaultCenter = { lat: 39.8283, lng: -98.5795 };
   const defaultZoom = 4;
 
-  // Use initial center/zoom only - don't control these props so map is pannable/zoomable
-  const [mapCenter, setMapCenter] = useState(
-    results && results.length > 0
-      ? { lat: Number(results[0].lat), lng: Number(results[0].lng) }
-      : defaultCenter
-  );
-
-  const [mapZoom, setMapZoom] = useState(
-    results && results.length > 0 ? 12 : defaultZoom
-  );
+  // If there are results, center on the top result
+  const center = results && results.length > 0 
+    ? { lat: results[0].lat, lng: results[0].lng } 
+    : defaultCenter;
+  
+  const zoom = results && results.length > 0 ? 12 : defaultZoom;
 
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || import.meta.env.GOOGLE_MAPS_API_KEY || '';
 
@@ -38,10 +34,12 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
   return (
     <APIProvider apiKey={apiKey}>
       <Map
-        defaultCenter={mapCenter}
-        defaultZoom={mapZoom}
+        defaultCenter={defaultCenter}
+        center={center}
+        defaultZoom={defaultZoom}
+        zoom={zoom}
         mapId="DEMO_MAP_ID" // Required for AdvancedMarker
-        disableDefaultUI={false}
+        disableDefaultUI={true}
         className="w-full h-full"
       >
         {results && results.map((result, index) => {
@@ -49,7 +47,7 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
           return (
             <React.Fragment key={result.id || index}>
               <AdvancedMarker
-                position={{ lat: Number(result.lat), lng: Number(result.lng) }}
+                position={{ lat: result.lat, lng: result.lng }}
                 onClick={() => onSelectResult(result)}
               >
                 <Pin 
@@ -64,7 +62,7 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
 
               {isSelected && (
                 <InfoWindow
-                  position={{ lat: Number(result.lat), lng: Number(result.lng) }}
+                  position={{ lat: result.lat, lng: result.lng }}
                   onCloseClick={() => onSelectResult(null)}
                   pixelOffset={[0, -40]}
                 >
