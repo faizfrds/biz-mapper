@@ -7,9 +7,10 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
   const defaultZoom = 4;
 
   // If there are results, center on the top result
-  const center = results && results.length > 0 
-    ? { lat: results[0].lat, lng: results[0].lng } 
-    : defaultCenter;
+  const [mapCenter, setMapCenter] = useState(results && results.length > 0 
+    ? { lat: Number(results[0].lat), lng: Number(results[0].lng) } 
+    : defaultCenter);
+  const [mapZoom, setMapZoom] = useState(results && results.length > 0 ? 12 : defaultZoom);
   
   const zoom = results && results.length > 0 ? 12 : defaultZoom;
 
@@ -34,12 +35,10 @@ export default function MapContainer({ results, selectedResult, onSelectResult }
   return (
     <APIProvider apiKey={apiKey}>
       <Map
-        defaultCenter={defaultCenter}
-        center={center}
-        defaultZoom={defaultZoom}
-        zoom={zoom}
+        defaultCenter={mapCenter}
+        defaultZoom={mapZoom}
         mapId="DEMO_MAP_ID" // Required for AdvancedMarker
-        disableDefaultUI={true}
+        disableDefaultUI={false}
         className="w-full h-full"
       >
         {results && results.map((result, index) => {

@@ -27,11 +27,7 @@ def create_agent_pipeline():
     # 1. The Strategist
     strategist = Agent(
         name="Strategist",
-<<<<<<< Updated upstream
-        model="gemini-1.5-flash",
-=======
         model=AGENT_MODEL,
->>>>>>> Stashed changes
         description="Lead planner who interprets user goals and determines location and weights.",
         instruction=prompts.STRATEGIST_PROMPT,
         tools=[tools.geocode_neighborhood, tools.emit_thought_log]
@@ -40,11 +36,7 @@ def create_agent_pipeline():
     # 2. The Geo-Analyst
     geo_analyst = Agent(
         name="Geo_Analyst",
-<<<<<<< Updated upstream
-        model="gemini-1.5-flash",
-=======
         model=AGENT_MODEL,
->>>>>>> Stashed changes
         description="BigQuery specialist who executes map queries.",
         instruction=prompts.GEO_ANALYST_PROMPT,
         tools=[tools.get_schema, tools.run_query, tools.emit_thought_log]
@@ -53,11 +45,7 @@ def create_agent_pipeline():
     # 3. The Cartographer
     cartographer = Agent(
         name="Cartographer",
-<<<<<<< Updated upstream
-        model="gemini-1.5-flash",
-=======
         model=AGENT_MODEL,
->>>>>>> Stashed changes
         description="Data refiner who applies the mathematical scoring formula.",
         instruction=prompts.CARTOGRAPHER_PROMPT,
         tools=[tools.calculate_suitability, tools.emit_thought_log]
@@ -65,10 +53,6 @@ def create_agent_pipeline():
     
     orchestrator = SequentialAgent(
         name="Orchestrator",
-<<<<<<< Updated upstream
-        model="gemini-1.5-flash",
-=======
->>>>>>> Stashed changes
         description="Manages the pipeline from User Intent -> Execution -> Display",
         sub_agents=[strategist, geo_analyst, cartographer]
     )
@@ -89,22 +73,8 @@ async def run_planner(user_prompt: str) -> dict:
     pipeline = create_agent_pipeline()
     runner = InMemoryRunner(agent=pipeline)
     
-<<<<<<< Updated upstream
-    final_output: str = ""
-    try:
-        events = await runner.run_debug(user_prompt, quiet=True)
-        for event in events:
-            # Safely parse the text out of the ADK Event
-            event_dict = event.model_dump()
-            if event_dict.get("content") and event_dict["content"].get("parts"):
-                for part in event_dict["content"]["parts"]:
-                    text_content = part.get("text")
-                    if text_content:
-                        final_output += str(text_content)
-=======
     output_parts: list[str] = []
     last_error: Exception | None = None
->>>>>>> Stashed changes
 
     for attempt in range(1, MAX_RETRIES + 1):
         output_parts.clear()
@@ -142,11 +112,13 @@ async def run_planner(user_prompt: str) -> dict:
         output_parts.append(f"Error during pipeline execution: {str(last_error)}")
         tools.emit_thought_log("System", "error", f"Pipeline failed: {str(last_error)}")
         
+    final_output = "".join(output_parts)
+
     # Attempt to parse final_output as JSON
     results = []
     try:
         # Sometimes LLMs wrap in markdown anyway despite instruction
-        clean_json = str(final_output).strip()
+        clean_json = final_output.strip()
         clean_json = clean_json.replace("```json", "").replace("```", "").strip()
         if clean_json:
             results = json.loads(clean_json)
@@ -154,11 +126,7 @@ async def run_planner(user_prompt: str) -> dict:
         print(f"Failed to parse JSON output: {e}. Raw output: {final_output}")
 
     return {
-<<<<<<< Updated upstream
         "results": results,
         "final_output": final_output,
-=======
-        "final_output": "".join(output_parts),
->>>>>>> Stashed changes
         "thoughts": tools.thought_logs.copy()
     }

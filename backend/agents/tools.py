@@ -61,13 +61,23 @@ def calculate_suitability(candidates: list[dict], w1: float, w2: float, w3: floa
     Returns:
         str: A JSON string of the candidates ranked by descending suitability score.
     """
+    def safe_float(val, default=0.0):
+        try:
+            return float(val) if val is not None else default
+        except (ValueError, TypeError):
+            return default
+
+    w1_safe = safe_float(w1)
+    w2_safe = safe_float(w2)
+    w3_safe = safe_float(w3)
+    
     for index, loc in enumerate(candidates):
-        # Default to 0 if a feature is missing
-        t = loc.get('traffic', 0)
-        d = loc.get('density', 0)
-        c = loc.get('competition', 0)
+        # Default to 0 if a feature is missing or None
+        t = safe_float(loc.get('traffic'))
+        d = safe_float(loc.get('density'))
+        c = safe_float(loc.get('competition'))
         
-        score = (w1 * t) + (w2 * d) - (w3 * c)
+        score = (w1_safe * t) + (w2_safe * d) - (w3_safe * c)
         loc['suitability_score'] = round(score, 3)
         loc['id'] = index + 1
         

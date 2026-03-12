@@ -18,7 +18,7 @@ export function useQuery() {
     try {
       // Hit the FastAPI backend endpoint
       const response = await axios.post('/api/query', { prompt: userPrompt }, {
-        timeout: 60000 // ADK agents might take up to a minute to process
+        timeout: 6000000 // ADK agents might take up to a minute to process
       });
       
       if (response.data && response.data.results) {

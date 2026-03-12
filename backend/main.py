@@ -41,16 +41,26 @@ async def run_query(request: QueryRequest):
     summary_text = final_output
 
     try:
-        # Look for JSON block in the output
         import re
-        json_match = re.search(r'\{[\s\S]*"results"[\s\S]*\}', final_output)
+        # Try to find a markdown JSON block first
+        json_match = re.search(r'```(?:json)?\s*(\{[\s\S]*?\})\s*```', final_output)
         if json_match:
-            parsed_data = json.loads(json_match.group())
+            clean_json = json_match.group(1)
+        else:
+            # Fallback: extract substring from first { to last }
+            start = final_output.find('{')
+            end = final_output.rfind('}')
+            if start != -1 and end != -1 and end > start:
+                clean_json = final_output[start:end+1]
+            else:
+                clean_json = "{}"
+        
+        parsed_data = json.loads(clean_json)
+        if isinstance(parsed_data, dict):
             parsed_results = parsed_data.get("results", [])
             summary_text = parsed_data.get("summary", final_output)
-    except (json.JSONDecodeError, AttributeError):
-        # If parsing fails, keep the original text output
-        pass
+    except Exception as e:
+        print(f"Failed to extract/parse JSON: {e}")
 
     return {
         "results": parsed_results,
