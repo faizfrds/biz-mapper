@@ -79,30 +79,3 @@ Create a `.env` file in the root directory (or in the backend and frontend folde
 2. In the **Search Bar**, enter a natural language business goal. For example: *"I want to open an artisanal coffee shop in Seattle focusing on areas with high foot traffic and high median income, but away from existing large cafe chains."*
 3. Watch the **Thinking Log** on the left as it streams the AI's internal reasoning and BigQuery execution.
 4. When complete, the recommended locations will be shown as cards and plotted as markers on the **Map View**.
-
-biz-mapper/
-├── backend/                # FastAPI / Python logic
-│   ├── agents/             # Google ADK Implementation
-│   │   ├── planner.py      │   # The main Reason-Act-Observe loop
-│   │   ├── tools.py        │   # BigQuery & Maps tool definitions
-│   │   └── prompts.py      │   # System instructions & Few-shot examples
-│   ├── services/           # External Integrations
-│   │   ├── bigquery_client.py  # SQL execution & BQML calls
-│   │   └── maps_service.py     # Geometry & Routing logic
-│   ├── main.py             # FastAPI entry point & routes
-│   └── requirements.txt
-├── frontend/               # React + Tailwind
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── MapContainer.jsx   # Google Maps SDK integration
-│   │   │   ├── ThinkingLog.jsx    # The Agent's "Log Stream" UI
-│   │   │   └── SearchBar.jsx      # Natural Language Input
-│   │   ├── hooks/                 # Custom React hooks for API calls
-│   │   └── App.js
-│   ├── public/
-│   └── package.json
-├── data/                   # Data Engineering (Optional/Local)
-│   ├── queries/            # Saved SQL scripts for BigQuery
-│   └── schemas/            # JSON definitions of Census/OSM tables
-├── .env                    # API Keys (Google Cloud, Gemini)
-└── README.md               # Your Design Doc
