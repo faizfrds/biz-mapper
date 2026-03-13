@@ -1,7 +1,7 @@
 # biz-mapper
 
 ## Abstract
-The Autonomous Urban Planner is an agent-driven web application that automates complex urban site selection. Users provide their business goals, and a multi-agentic AI system autonomously queries demographic and geographic data to provide ranked recommendations visualized on an interactive map. The agents are powered by Google ADK through the Reasoning-Act-Observe principle, enhanced with its connections to Google BigQuery and Google Maps SDK for automatic information retrieval.
+Biz Mapper is an agent-driven web application that automates complex urban site selection. Users provide their business goals, and a multi-agentic AI system autonomously queries demographic and geographic data to provide ranked recommendations visualized on an interactive map. The agents are powered by Google ADK through the Reasoning-Act-Observe principle, enhanced with its connections to Google BigQuery and Google Maps SDK for automatic information retrieval.
 
 ## Objectives
 Natural Language Site Selection: Translate vague goals into structured data queries.
